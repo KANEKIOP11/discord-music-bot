@@ -29,7 +29,7 @@ export const playCommand = async (message: Message, args: string[]) => {
         channelId: voiceChannel.id,
         guildId: voiceChannel.guild.id,
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-        selfDeaf: false
+        selfDeaf: true
     });
 
     try {
