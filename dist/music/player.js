@@ -1,5 +1,7 @@
 "use strict";
 class MusicPlayer {
+    connection;
+    queue;
     constructor(connection) {
         this.connection = connection;
         this.queue = [];

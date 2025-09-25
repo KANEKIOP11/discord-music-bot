@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const dotenv_1 = __importDefault(require("dotenv"));
-const play_js_1 = require("./commands/play.js"); // 👈 add .js
+const play_1 = require("./commands/play");
 dotenv_1.default.config();
 const token = process.env.DISCORD_TOKEN;
 const prefix = process.env.PREFIX ?? "!"; // fallback to "!" if not set
@@ -30,7 +30,26 @@ client.on('messageCreate', async (message) => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift()?.toLowerCase();
     if (command === 'play') {
-        await (0, play_js_1.playCommand)(message, args);
+        await (0, play_1.playCommand)(message, args);
+    }
+    if (command === 'disconnect' || command === 'dc') {
+        if (message.member?.voice.channel) {
+            const connection = message.guild?.voiceAdapterCreator;
+            if (connection) {
+                // Find and destroy the voice connection
+                const voiceConnection = message.client.voice?.connections?.get(message.guild.id);
+                if (voiceConnection) {
+                    voiceConnection.destroy();
+                    message.reply("Disconnected from voice channel!");
+                }
+                else {
+                    message.reply("Not connected to any voice channel!");
+                }
+            }
+        }
+        else {
+            message.reply("You need to be in a voice channel!");
+        }
     }
 });
 client.login(token);

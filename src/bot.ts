@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
-import { playCommand } from './commands/play.js'; // 👈 add .js
+import { playCommand } from './commands/play';
 dotenv.config();
 
 const token = process.env.DISCORD_TOKEN;
@@ -32,6 +32,24 @@ client.on('messageCreate', async (message) => {
 
   if (command === 'play') {
     await playCommand(message, args);
+  }
+  
+  if (command === 'disconnect' || command === 'dc') {
+    if (message.member?.voice.channel) {
+      const connection = message.guild?.voiceAdapterCreator;
+      if (connection) {
+        // Find and destroy the voice connection
+        const voiceConnection = (message.client as any).voice?.connections?.get(message.guild.id);
+        if (voiceConnection) {
+          voiceConnection.destroy();
+          message.reply("Disconnected from voice channel!");
+        } else {
+          message.reply("Not connected to any voice channel!");
+        }
+      }
+    } else {
+      message.reply("You need to be in a voice channel!");
+    }
   }
 });
 
